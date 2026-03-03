@@ -1,65 +1,123 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import { useState, useEffect, useCallback } from 'react'
+import { supabase } from '@/lib/supabase'
+import Header from '@/components/Header'
+import TabBar from '@/components/TabBar'
+import SummaryTab from '@/components/tabs/SummaryTab'
+import PerformanceTab from '@/components/tabs/PerformanceTab'
+import HeatmapTab from '@/components/tabs/HeatmapTab'
+import RiskTab from '@/components/tabs/RiskTab'
+import DeepDiveTab from '@/components/tabs/DeepDiveTab'
+
+function getDefaultDates() {
+  const end = new Date()
+  const start = new Date()
+  start.setDate(start.getDate() - 30)
+  return {
+    start: start.toISOString().split('T')[0],
+    end: end.toISOString().split('T')[0],
+  }
+}
+
+export default function DashboardPage() {
+  const defaults = getDefaultDates()
+  const [startDate, setStartDate] = useState(defaults.start)
+  const [endDate, setEndDate] = useState(defaults.end)
+  const [activeTab, setActiveTab] = useState('summary')
+  const [logs, setLogs] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  const fetchLogs = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const { data, error: sbError } = await supabase
+        .from('daily_logs')
+        .select('*')
+        .gte('date', startDate)
+        .lte('date', endDate)
+        .order('date', { ascending: true })
+
+      if (sbError) throw sbError
+      setLogs(data || [])
+    } catch (err) {
+      setError(err.message || 'Failed to load data from Supabase.')
+      setLogs([])
+    } finally {
+      setLoading(false)
+    }
+  }, [startDate, endDate])
+
+  useEffect(() => {
+    fetchLogs()
+  }, [fetchLogs])
+
+  const tabProps = { logs, loading, dateRange: { start: startDate, end: endDate } }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)' }}>
+      <Header
+        startDate={startDate}
+        endDate={endDate}
+        onStartDateChange={setStartDate}
+        onEndDateChange={setEndDate}
+      />
+      <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
+
+      <main className="px-6 py-6 max-w-screen-2xl mx-auto">
+        {/* Error State */}
+        {error && !loading && (
+          <div className="glass-card p-8 mb-6 text-center animate-fade-in">
+            <div className="text-3xl mb-3">⚠️</div>
+            <h3 className="text-lg font-bold mb-2" style={{ fontFamily: 'Syne, sans-serif', color: '#ff4d6d' }}>
+              Failed to Load Data
+            </h3>
+            <p className="text-sm mb-4" style={{ color: '#94a3b8' }}>{error}</p>
+            <button
+              onClick={fetchLogs}
+              className="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300"
+              style={{
+                background: 'rgba(0,229,204,0.08)',
+                border: '1px solid rgba(0,229,204,0.2)',
+                color: '#00e5cc',
+                fontFamily: 'Syne, sans-serif',
+                cursor: 'pointer',
+              }}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+              Retry
+            </button>
+          </div>
+        )}
+
+        {/* No data notice (non-error) */}
+        {!loading && !error && logs.length === 0 && (
+          <div className="glass-card p-8 mb-6 text-center animate-fade-in">
+            <div className="text-3xl mb-3">📭</div>
+            <h3 className="text-lg font-bold mb-2" style={{ fontFamily: 'Syne, sans-serif', color: '#f1f5f9' }}>
+              No logs found
+            </h3>
+            <p className="text-sm" style={{ color: '#64748b' }}>
+              No daily logs exist for the selected date range ({startDate} → {endDate}). Try widening the range.
+            </p>
+          </div>
+        )}
+
+        {/* Tab Content */}
+        {activeTab === 'summary' && <SummaryTab {...tabProps} />}
+        {activeTab === 'performance' && <PerformanceTab {...tabProps} />}
+        {activeTab === 'heatmap' && <HeatmapTab {...tabProps} />}
+        {activeTab === 'risk' && <RiskTab {...tabProps} />}
+        {activeTab === 'deepdive' && <DeepDiveTab {...tabProps} />}
       </main>
+
+      {/* Footer */}
+      <footer className="px-6 py-4 mt-8 border-t text-center" style={{ borderColor: 'rgba(255,255,255,0.04)' }}>
+        <p style={{ color: '#222222', fontSize: 11, fontFamily: 'Inter, sans-serif' }}>
+          AD-LAB PERFORMANCE INTELLIGENCE • {new Date().getFullYear()}
+        </p>
+      </footer>
     </div>
-  );
+  )
 }
