@@ -18,7 +18,7 @@ export default function LogSlideOver({ log, onClose }) {
 
     if (!log) return null
 
-    const cfg = signalConfig[log.performance_signal] || { color: '#64748b', bg: '#111111', label: log.performance_signal }
+    const cfg = signalConfig[log.performance_signal] || { color: 'var(--text-muted)', bg: 'var(--bg-surface)', label: log.performance_signal }
 
     const fields = [
         { label: '✅ Successes', value: log.successes },
@@ -34,34 +34,34 @@ export default function LogSlideOver({ log, onClose }) {
             {/* Backdrop */}
             <div
                 className="fixed inset-0 z-40 animate-fade-in"
-                style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)' }}
+                style={{ background: 'var(--backdrop)', backdropFilter: 'blur(6px)' }}
                 onClick={onClose}
             />
 
             {/* Panel */}
             <div
                 className="fixed right-0 top-0 bottom-0 z-50 flex flex-col animate-slide-in overflow-hidden"
-                style={{ width: 480, background: '#0a0a0a', borderLeft: '1px solid rgba(255,255,255,0.06)' }}
+                style={{ width: 480, background: 'var(--bg-card)', borderLeft: '1px solid var(--border-subtle)' }}
             >
                 {/* Header */}
-                <div className="p-6 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+                <div className="p-6 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
                     <div className="flex items-center justify-between mb-3">
-                        <h2 className="text-lg font-bold" style={{ fontFamily: 'Syne, sans-serif', color: '#f1f5f9' }}>
+                        <h2 className="text-lg font-bold" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
                             Log Entry
                         </h2>
                         <button
                             onClick={onClose}
                             className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors duration-200"
-                            style={{ background: 'rgba(255,255,255,0.05)', color: '#94a3b8' }}
+                            style={{ background: 'var(--row-hover)', color: 'var(--text-secondary)', border: 'none', cursor: 'pointer' }}
                         >
                             ✕
                         </button>
                     </div>
                     <div className="flex items-center gap-3 flex-wrap">
-                        <span className="font-semibold text-base rounded-xl px-3 py-1" style={{ background: 'rgba(0,229,204,0.08)', color: '#00e5cc', fontFamily: 'Syne, sans-serif' }}>
+                        <span className="font-semibold text-base rounded-xl px-3 py-1" style={{ background: 'var(--accent-teal-bg)', color: 'var(--accent-teal)', fontFamily: 'Syne, sans-serif' }}>
                             {log.client_name}
                         </span>
-                        <span className="text-sm" style={{ color: '#64748b' }}>{log.date}</span>
+                        <span className="text-sm" style={{ color: 'var(--text-muted)' }}>{log.date}</span>
                         <span className="signal-pill text-xs" style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.color}30` }}>
                             <span style={{ width: 6, height: 6, borderRadius: '50%', background: cfg.color, display: 'inline-block' }} />
                             {cfg.label}
@@ -74,17 +74,17 @@ export default function LogSlideOver({ log, onClose }) {
                     {fields.map(({ label, value }) => (
                         isSubstantive(value) ? (
                             <div key={label}>
-                                <div className="text-xs uppercase tracking-widest mb-2 font-semibold" style={{ color: '#475569', fontFamily: 'Syne, sans-serif' }}>
+                                <div className="text-xs uppercase tracking-widest mb-2 font-semibold" style={{ color: 'var(--text-dim)', fontFamily: 'Syne, sans-serif' }}>
                                     {label}
                                 </div>
-                                <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: '#94a3b8' }}>
+                                <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: 'var(--text-secondary)' }}>
                                     {value}
                                 </p>
                             </div>
                         ) : null
                     ))}
                     {fields.every(({ value }) => !isSubstantive(value)) && (
-                        <p style={{ color: '#475569' }} className="text-sm">No detailed information for this log.</p>
+                        <p style={{ color: 'var(--text-dim)' }} className="text-sm">No detailed information for this log.</p>
                     )}
                 </div>
             </div>

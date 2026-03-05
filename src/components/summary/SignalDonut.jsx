@@ -8,8 +8,8 @@ const CustomTooltip = ({ active, payload }) => {
     if (!active || !payload?.length) return null
     const d = payload[0]
     return (
-        <div className="custom-tooltip" style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 10, padding: '12px 16px' }}>
-            <div className="label" style={{ color: '#f1f5f9', fontFamily: 'Syne, sans-serif', fontWeight: 600, marginBottom: 6 }}>
+        <div style={{ background: 'var(--tooltip-bg)', border: '1px solid var(--border-subtle)', borderRadius: 10, padding: '12px 16px' }}>
+            <div style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif', fontWeight: 600, marginBottom: 6 }}>
                 {d.name}
             </div>
             <div style={{ color: d.payload.color, fontSize: 13 }}>
@@ -51,12 +51,12 @@ export default function SignalDonut({ logs }) {
     }, [logs])
 
     return (
-        <div className="glass-card p-6 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-            <h3 className="text-base font-semibold mb-6" style={{ fontFamily: 'Syne, sans-serif', color: '#f1f5f9' }}>
+        <div className="elevated-card p-6 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+            <h3 className="text-base font-semibold mb-6" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
                 Signal Distribution
             </h3>
             {data.length === 0 ? (
-                <div className="flex items-center justify-center h-64" style={{ color: '#64748b' }}>No data</div>
+                <div className="flex items-center justify-center h-64" style={{ color: 'var(--text-muted)' }}>No data</div>
             ) : (
                 <ResponsiveContainer width="100%" height={280}>
                     <PieChart>
@@ -82,7 +82,7 @@ export default function SignalDonut({ logs }) {
                         <Tooltip content={<CustomTooltip />} />
                         <Legend
                             formatter={(value, entry) => (
-                                <span style={{ color: '#94a3b8', fontSize: 12, fontFamily: 'Inter, sans-serif' }}>
+                                <span style={{ color: 'var(--text-secondary)', fontSize: 12, fontFamily: 'Inter, sans-serif' }}>
                                     {value}
                                 </span>
                             )}

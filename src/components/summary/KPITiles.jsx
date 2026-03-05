@@ -27,15 +27,12 @@ function KPICard({ title, value, suffix = '', icon, accentColor, subtext, delay 
 
     return (
         <div
-            className="glass-card p-6 flex flex-col gap-3 animate-fade-in-up relative overflow-hidden"
+            className="elevated-card p-6 flex flex-col gap-3 animate-fade-in-up relative overflow-hidden"
             style={{ animationDelay: `${delay}ms` }}
         >
-            {/* Left accent bar */}
             <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl" style={{ background: accentColor }} />
-
-            {/* Header */}
             <div className="flex items-center justify-between">
-                <span className="text-xs uppercase tracking-widest font-medium" style={{ color: '#64748b', fontFamily: 'Syne, sans-serif' }}>
+                <span className="text-xs uppercase tracking-widest font-medium" style={{ color: 'var(--text-muted)', fontFamily: 'Syne, sans-serif' }}>
                     {title}
                 </span>
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center text-base"
@@ -43,10 +40,8 @@ function KPICard({ title, value, suffix = '', icon, accentColor, subtext, delay 
                     {icon}
                 </div>
             </div>
-
-            {/* Value */}
             <div className="flex items-end gap-1.5">
-                <span className="text-4xl font-bold" style={{ fontFamily: 'Syne, sans-serif', color: '#f1f5f9', lineHeight: 1 }}>
+                <span className="text-4xl font-bold" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)', lineHeight: 1 }}>
                     {typeof value === 'number' ? animated : value}
                 </span>
                 {suffix && (
@@ -55,10 +50,8 @@ function KPICard({ title, value, suffix = '', icon, accentColor, subtext, delay 
                     </span>
                 )}
             </div>
-
-            {/* Subtext */}
             {subtext && (
-                <span className="text-xs" style={{ color: '#64748b' }}>{subtext}</span>
+                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{subtext}</span>
             )}
         </div>
     )
@@ -72,10 +65,10 @@ export default function KPITiles({ logs }) {
         const activeBlockers = logs.filter((l) => isSubstantive(l.blockers_problems)).length
 
         const scoreColor =
-            healthScore === null ? '#64748b'
-                : healthScore >= 75 ? '#4ade80'
-                    : healthScore >= 50 ? '#f5c842'
-                        : '#ff4d6d'
+            healthScore === null ? 'var(--text-muted)'
+                : healthScore >= 75 ? 'var(--accent-green)'
+                    : healthScore >= 50 ? 'var(--accent-yellow)'
+                        : 'var(--accent-coral)'
 
         return { totalLogs, uniqueClients, healthScore, activeBlockers, scoreColor }
     }, [logs])

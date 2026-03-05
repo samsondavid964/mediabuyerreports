@@ -24,7 +24,6 @@ function extractKeywords(texts) {
             .split(/\s+/)
             .filter((w) => w.length > 2 && !STOP_WORDS.has(w))
 
-        // Look for 2-word phrases first
         for (let i = 0; i < words.length - 1; i++) {
             const phrase = `${words[i]} ${words[i + 1]}`
             if (!STOP_WORDS.has(words[i]) && !STOP_WORDS.has(words[i + 1])) {
@@ -36,7 +35,6 @@ function extractKeywords(texts) {
         })
     })
 
-    // Filter out single words that are fully covered by top phrases
     const sorted = Object.entries(counts)
         .sort(([, a], [, b]) => b - a)
         .slice(0, 14)
@@ -51,9 +49,9 @@ function extractKeywords(texts) {
 const CustomTooltip = ({ active, payload }) => {
     if (!active || !payload?.length) return null
     return (
-        <div style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 10, padding: '10px 14px' }}>
-            <div style={{ color: '#f1f5f9', fontSize: 13, fontFamily: 'Inter, sans-serif' }}>{payload[0].payload.keyword}</div>
-            <div style={{ color: '#00e5cc', fontSize: 12 }}>{payload[0].value} mentions</div>
+        <div style={{ background: 'var(--tooltip-bg)', border: '1px solid var(--border-subtle)', borderRadius: 10, padding: '10px 14px' }}>
+            <div style={{ color: 'var(--text-primary)', fontSize: 13, fontFamily: 'Inter, sans-serif' }}>{payload[0].payload.keyword}</div>
+            <div style={{ color: 'var(--accent-teal)', fontSize: 12 }}>{payload[0].value} mentions</div>
         </div>
     )
 }
@@ -65,15 +63,15 @@ export default function BlockersChart({ logs, field = 'blockers_problems', title
 
     return (
         <div className="glass-card p-6 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-            <h3 className="text-base font-semibold mb-4" style={{ fontFamily: 'Syne, sans-serif', color: '#f1f5f9' }}>{title}</h3>
+            <h3 className="text-base font-semibold mb-4" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>{title}</h3>
             {data.length === 0 ? (
-                <div className="flex items-center justify-center h-48" style={{ color: '#64748b' }}>No data</div>
+                <div className="flex items-center justify-center h-48" style={{ color: 'var(--text-muted)' }}>No data</div>
             ) : (
                 <ResponsiveContainer width="100%" height={280}>
                     <BarChart data={data} layout="vertical" margin={{ top: 0, right: 20, left: 80, bottom: 0 }}>
                         <XAxis
                             type="number"
-                            tick={{ fill: '#64748b', fontFamily: 'Inter, sans-serif', fontSize: 11 }}
+                            tick={{ fill: 'var(--text-muted)', fontFamily: 'Inter, sans-serif', fontSize: 11 }}
                             tickLine={false}
                             axisLine={false}
                             allowDecimals={false}
@@ -81,7 +79,7 @@ export default function BlockersChart({ logs, field = 'blockers_problems', title
                         <YAxis
                             type="category"
                             dataKey="keyword"
-                            tick={{ fill: '#94a3b8', fontFamily: 'Inter, sans-serif', fontSize: 11 }}
+                            tick={{ fill: 'var(--text-secondary)', fontFamily: 'Inter, sans-serif', fontSize: 11 }}
                             tickLine={false}
                             axisLine={false}
                             width={80}

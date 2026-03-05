@@ -23,6 +23,13 @@ export function getHealthScore(logs) {
 
 export function isSubstantive(text) {
     if (!text) return false
-    const t = text.trim().toLowerCase()
-    return t !== '' && t !== '-' && t !== 'all good' && t !== 'n/a' && t !== 'none' && t !== 'na'
+    const t = text.trim().toLowerCase().replace(/[.,!?;:]/g, '')
+    if (t.length < 2) return false
+    const ignoreWords = [
+        'none', 'na', 'n/a', 'no', 'nothing', 'all good',
+        'no issues', 'none at the moment', 'not applicable',
+        'none today', 'no current issues', 'all set',
+        'no problems', 'no new issues', 'no issues so far'
+    ]
+    return !ignoreWords.includes(t)
 }

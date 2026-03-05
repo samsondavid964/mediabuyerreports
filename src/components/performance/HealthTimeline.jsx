@@ -3,23 +3,19 @@
 import { useMemo } from 'react'
 import {
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
-    ReferenceLine, ResponsiveContainer, defs, linearGradient, stop,
+    ResponsiveContainer, Legend,
 } from 'recharts'
-import { signalConfig, getHealthScore } from '@/lib/signalConfig'
+import { signalConfig, signalOrder } from '@/lib/signalConfig'
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null
-    const d = payload[0].payload
     return (
-        <div style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 10, padding: '12px 16px', minWidth: 180 }}>
-            <div style={{ color: '#f1f5f9', fontFamily: 'Syne, sans-serif', fontWeight: 600, marginBottom: 8, fontSize: 13 }}>{label}</div>
-            <div style={{ color: '#00e5cc', fontFamily: 'Inter, sans-serif', fontSize: 14, marginBottom: 8 }}>
-                Score: {d.score}%
-            </div>
-            {d.breakdown && Object.entries(d.breakdown).map(([sig, cnt]) => cnt > 0 && (
-                <div key={sig} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#94a3b8', marginBottom: 2 }}>
-                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: signalConfig[sig]?.color, display: 'inline-block' }} />
-                    {signalConfig[sig]?.label}: {cnt}
+        <div style={{ background: 'var(--tooltip-bg)', border: '1px solid var(--border-subtle)', borderRadius: 10, padding: '12px 16px', minWidth: 180 }}>
+            <div style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif', fontWeight: 600, marginBottom: 8, fontSize: 13 }}>{label}</div>
+            {payload.map((p) => p.value > 0 && (
+                <div key={p.dataKey} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-secondary)', marginBottom: 3 }}>
+                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: p.fill || p.stroke, display: 'inline-block' }} />
+                    {signalConfig[p.dataKey]?.label || p.dataKey}: <span style={{ color: p.fill || p.stroke, fontWeight: 600 }}>{p.value}</span>
                 </div>
             ))}
         </div>
@@ -30,70 +26,77 @@ export default function HealthTimeline({ logs }) {
     const data = useMemo(() => {
         const byDate = {}
         logs.forEach((log) => {
-            if (!byDate[log.date]) byDate[log.date] = []
-            byDate[log.date].push(log)
+            if (!byDate[log.date]) byDate[log.date] = {}
+            byDate[log.date][log.performance_signal] = (byDate[log.date][log.performance_signal] || 0) + 1
         })
         return Object.entries(byDate)
             .sort(([a], [b]) => a.localeCompare(b))
-            .map(([date, dayLogs]) => {
-                const breakdown = {}
-                dayLogs.forEach((l) => {
-                    breakdown[l.performance_signal] = (breakdown[l.performance_signal] || 0) + 1
-                })
-                return { date, score: getHealthScore(dayLogs), breakdown }
+            .map(([date, counts]) => {
+                const row = { date }
+                signalOrder.forEach((s) => { row[s] = counts[s] || 0 })
+                return row
             })
     }, [logs])
 
     return (
-        <div className="glass-card p-6 animate-fade-in-up">
-            <h3 className="text-base font-semibold mb-6" style={{ fontFamily: 'Syne, sans-serif', color: '#f1f5f9' }}>
+        <div className="elevated-card p-6 animate-fade-in-up">
+            <h3 className="text-base font-semibold mb-6" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
                 Portfolio Health Over Time
             </h3>
             {data.length === 0 ? (
-                <div className="flex items-center justify-center h-64" style={{ color: '#64748b' }}>No data</div>
+                <div className="flex items-center justify-center h-64" style={{ color: 'var(--text-muted)' }}>No data</div>
             ) : (
                 <ResponsiveContainer width="100%" height={300}>
                     <AreaChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                         <defs>
-                            <linearGradient id="healthGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#00e5cc" stopOpacity={0.3} />
-                                <stop offset="95%" stopColor="#00e5cc" stopOpacity={0} />
-                            </linearGradient>
+                            {signalOrder.map((s) => (
+                                <linearGradient key={s} id={`gradient-${s.replace(/[\s/]/g, '')}`} x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor={signalConfig[s].color} stopOpacity={0.4} />
+                                    <stop offset="95%" stopColor={signalConfig[s].color} stopOpacity={0.05} />
+                                </linearGradient>
+                            ))}
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--grid-line)" />
                         <XAxis
                             dataKey="date"
-                            tick={{ fill: '#64748b', fontFamily: 'Inter, sans-serif', fontSize: 11 }}
+                            tick={{ fill: 'var(--text-muted)', fontFamily: 'Inter, sans-serif', fontSize: 11 }}
                             tickLine={false}
-                            axisLine={{ stroke: 'rgba(255,255,255,0.04)' }}
+                            axisLine={{ stroke: 'var(--grid-line)' }}
                             interval="preserveStartEnd"
                         />
                         <YAxis
-                            domain={[0, 100]}
-                            tick={{ fill: '#64748b', fontFamily: 'Inter, sans-serif', fontSize: 11 }}
+                            tick={{ fill: 'var(--text-muted)', fontFamily: 'Inter, sans-serif', fontSize: 11 }}
                             tickLine={false}
                             axisLine={false}
-                            tickFormatter={(v) => `${v}%`}
+                            allowDecimals={false}
                         />
                         <Tooltip content={<CustomTooltip />} />
-                        <ReferenceLine
-                            y={70}
-                            stroke="#f5c842"
-                            strokeDasharray="4 4"
-                            label={{ value: 'Target', fill: '#f5c842', fontSize: 11, fontFamily: 'Inter, sans-serif' }}
+                        <Legend
+                            formatter={(v) => (
+                                <span style={{ color: 'var(--text-secondary)', fontSize: 12, fontFamily: 'Inter, sans-serif' }}>
+                                    {signalConfig[v]?.label || v}
+                                </span>
+                            )}
+                            iconType="circle"
+                            iconSize={8}
                         />
-                        <Area
-                            type="monotone"
-                            dataKey="score"
-                            stroke="#00e5cc"
-                            strokeWidth={2.5}
-                            fill="url(#healthGradient)"
-                            dot={false}
-                            activeDot={{ r: 4, fill: '#00e5cc', stroke: '#050505', strokeWidth: 2 }}
-                            isAnimationActive={true}
-                            animationDuration={1000}
-                            animationEasing="ease-out"
-                        />
+                        {[...signalOrder].reverse().map((s) => (
+                            <Area
+                                key={s}
+                                type="monotone"
+                                dataKey={s}
+                                name={s}
+                                stackId="signals"
+                                stroke={signalConfig[s].color}
+                                strokeWidth={2}
+                                fill={`url(#gradient-${s.replace(/[\s/]/g, '')})`}
+                                dot={false}
+                                activeDot={{ r: 3, fill: signalConfig[s].color, stroke: 'var(--bg-primary)', strokeWidth: 2 }}
+                                isAnimationActive={true}
+                                animationDuration={1000}
+                                animationEasing="ease-out"
+                            />
+                        ))}
                     </AreaChart>
                 </ResponsiveContainer>
             )}

@@ -10,10 +10,10 @@ import { signalConfig, signalOrder } from '@/lib/signalConfig'
 const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null
     return (
-        <div style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 10, padding: '12px 16px' }}>
-            <div style={{ color: '#f1f5f9', fontFamily: 'Syne, sans-serif', fontWeight: 600, marginBottom: 8, fontSize: 13 }}>{label}</div>
+        <div style={{ background: 'var(--tooltip-bg)', border: '1px solid var(--border-subtle)', borderRadius: 10, padding: '12px 16px' }}>
+            <div style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif', fontWeight: 600, marginBottom: 8, fontSize: 13 }}>{label}</div>
             {payload.map((p) => (
-                <div key={p.dataKey} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#94a3b8', marginBottom: 3 }}>
+                <div key={p.dataKey} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-secondary)', marginBottom: 3 }}>
                     <span style={{ width: 8, height: 8, borderRadius: 2, background: p.fill, display: 'inline-block' }} />
                     {p.name}: <span style={{ color: p.fill, fontWeight: 600 }}>{p.value}</span>
                 </div>
@@ -44,25 +44,25 @@ export default function SignalStackedBar({ logs, dateRange }) {
     }, [logs, dateRange])
 
     return (
-        <div className="glass-card p-6 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
-            <h3 className="text-base font-semibold mb-6" style={{ fontFamily: 'Syne, sans-serif', color: '#f1f5f9' }}>
+        <div className="elevated-card p-6 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+            <h3 className="text-base font-semibold mb-6" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
                 Signal Distribution Over Time
             </h3>
             {data.length === 0 ? (
-                <div className="flex items-center justify-center h-64" style={{ color: '#64748b' }}>No data</div>
+                <div className="flex items-center justify-center h-64" style={{ color: 'var(--text-muted)' }}>No data</div>
             ) : (
                 <ResponsiveContainer width="100%" height={280}>
                     <BarChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--grid-line)" vertical={false} />
                         <XAxis
                             dataKey="date"
-                            tick={{ fill: '#64748b', fontFamily: 'Inter, sans-serif', fontSize: 11 }}
+                            tick={{ fill: 'var(--text-muted)', fontFamily: 'Inter, sans-serif', fontSize: 11 }}
                             tickLine={false}
-                            axisLine={{ stroke: 'rgba(255,255,255,0.04)' }}
+                            axisLine={{ stroke: 'var(--grid-line)' }}
                             interval="preserveStartEnd"
                         />
                         <YAxis
-                            tick={{ fill: '#64748b', fontFamily: 'Inter, sans-serif', fontSize: 11 }}
+                            tick={{ fill: 'var(--text-muted)', fontFamily: 'Inter, sans-serif', fontSize: 11 }}
                             tickLine={false}
                             axisLine={false}
                             allowDecimals={false}
@@ -70,7 +70,7 @@ export default function SignalStackedBar({ logs, dateRange }) {
                         <Tooltip content={<CustomTooltip />} />
                         <Legend
                             formatter={(v) => (
-                                <span style={{ color: '#94a3b8', fontSize: 12, fontFamily: 'Inter, sans-serif' }}>
+                                <span style={{ color: 'var(--text-secondary)', fontSize: 12, fontFamily: 'Inter, sans-serif' }}>
                                     {signalConfig[v]?.label || v}
                                 </span>
                             )}

@@ -12,19 +12,19 @@ export default function TechIssues({ logs }) {
 
     return (
         <div className="glass-card p-6 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
-            <h3 className="text-base font-semibold mb-4" style={{ fontFamily: 'Syne, sans-serif', color: '#f1f5f9' }}>
+            <h3 className="text-base font-semibold mb-4" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
                 Tech Setup Issues
                 {issues.length > 0 && (
-                    <span className="ml-2 text-xs px-2 py-0.5 rounded-md" style={{ background: 'rgba(245,200,66,0.12)', color: '#f5c842' }}>{issues.length}</span>
+                    <span className="ml-2 text-xs px-2 py-0.5 rounded-md" style={{ background: 'rgba(245,200,66,0.12)', color: 'var(--accent-yellow)' }}>{issues.length}</span>
                 )}
             </h3>
             {issues.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 gap-2">
                     <div className="text-2xl">✅</div>
-                    <p style={{ color: '#4ade80', fontSize: 13 }}>No tech issues reported</p>
+                    <p style={{ color: 'var(--accent-green)', fontSize: 13 }}>No tech issues reported</p>
                 </div>
             ) : (
-                <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
+                <div className="space-y-3 max-h-[600px] overflow-y-auto pr-1">
                     {issues.map((log) => (
                         <div
                             key={log.id}
@@ -32,12 +32,12 @@ export default function TechIssues({ logs }) {
                             style={{ background: 'rgba(245,200,66,0.04)', border: '1px solid rgba(245,200,66,0.08)' }}
                         >
                             <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm font-semibold" style={{ color: '#f5c842', fontFamily: 'Syne, sans-serif' }}>
+                                <span className="text-sm font-semibold" style={{ color: 'var(--accent-yellow)', fontFamily: 'Syne, sans-serif' }}>
                                     {log.client_name}
                                 </span>
-                                <span className="text-xs" style={{ color: '#64748b' }}>{log.date}</span>
+                                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{log.date}</span>
                             </div>
-                            <p className="text-xs leading-relaxed" style={{ color: '#94a3b8' }}>{log.tech_setup_issues}</p>
+                            <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{log.tech_setup_issues}</p>
                         </div>
                     ))}
                 </div>

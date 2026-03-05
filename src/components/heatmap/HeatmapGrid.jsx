@@ -1,13 +1,21 @@
 'use client'
 
-import { useState, useMemo, useRef, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { signalConfig, isSubstantive } from '@/lib/signalConfig'
 
 const SIGNAL_COLORS = {
-    'Performing Well': '#4ade80',
-    'Mixed/Watching': '#f5c842',
-    'Underperforming': '#ff4d6d',
-    'At Risk/Possible Churn': '#dc2626',
+    'Performing Well': 'var(--heatmap-green)',
+    'Mixed/Watching': 'var(--heatmap-yellow)',
+    'Underperforming': 'var(--heatmap-coral)',
+    'At Risk/Possible Churn': 'var(--heatmap-red)',
+}
+
+// Raw hex for tooltip borders
+const SIGNAL_COLORS_RAW = {
+    'Performing Well': '#7dd3a3',
+    'Mixed/Watching': '#dbc878',
+    'Underperforming': '#d98a97',
+    'At Risk/Possible Churn': '#c47070',
 }
 
 function Tooltip({ log, visible, x, y }) {
@@ -16,29 +24,29 @@ function Tooltip({ log, visible, x, y }) {
     return (
         <div
             className="fixed z-50 pointer-events-none"
-            style={{ left: Math.min(x + 12, window.innerWidth - 270), top: y + 12, width: 260 }}
+            style={{ left: Math.min(x + 12, typeof window !== 'undefined' ? window.innerWidth - 270 : x), top: y + 12, width: 260 }}
         >
-            <div style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: 14, boxShadow: '0 16px 48px rgba(0,0,0,0.7)' }}>
-                <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, color: '#f1f5f9', marginBottom: 4, fontSize: 14 }}>{log.client_name}</div>
-                <div style={{ color: '#64748b', fontSize: 11, marginBottom: 8 }}>{log.date}</div>
+            <div style={{ background: 'var(--tooltip-bg)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: 14, boxShadow: '0 16px 48px rgba(0,0,0,0.7)' }}>
+                <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4, fontSize: 14 }}>{log.client_name}</div>
+                <div style={{ color: 'var(--text-muted)', fontSize: 11, marginBottom: 8 }}>{log.date}</div>
                 <span className="signal-pill" style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.color}30`, fontSize: 11, marginBottom: 10, display: 'inline-flex' }}>
                     <span style={{ width: 6, height: 6, borderRadius: '50%', background: cfg.color, display: 'inline-block' }} />
                     {cfg.label}
                 </span>
                 {isSubstantive(log.successes) && (
-                    <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 6 }}>
+                    <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 6 }}>
                         <span style={{ color: '#4ade80', marginRight: 4 }}>✅</span>
                         <span className="line-clamp-2">{log.successes}</span>
                     </div>
                 )}
                 {isSubstantive(log.blockers_problems) && (
-                    <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 6 }}>
+                    <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 6 }}>
                         <span style={{ color: '#ff4d6d', marginRight: 4 }}>🚧</span>
                         <span className="line-clamp-2">{log.blockers_problems}</span>
                     </div>
                 )}
                 {!isSubstantive(log.successes) && !isSubstantive(log.blockers_problems) && (
-                    <div style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>Click to view full log</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 6 }}>Click to view full log</div>
                 )}
             </div>
         </div>
@@ -61,7 +69,6 @@ export default function HeatmapGrid({ logs, onCellClick, dateRange }) {
 
         const clients = [...clientSet].sort()
 
-        // Generate every calendar day in the selected range
         const dates = []
         if (dateRange?.start && dateRange?.end) {
             const cursor = new Date(dateRange.start + 'T00:00:00')
@@ -71,7 +78,6 @@ export default function HeatmapGrid({ logs, onCellClick, dateRange }) {
                 cursor.setDate(cursor.getDate() + 1)
             }
         } else {
-            // fallback: only dates from logs
             const dateSet = new Set(logs.map((l) => l.date))
             dates.push(...[...dateSet].sort())
         }
@@ -100,42 +106,42 @@ export default function HeatmapGrid({ logs, onCellClick, dateRange }) {
 
     return (
         <div className="glass-card p-6 animate-fade-in-up">
-            <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-                <h3 className="text-base font-semibold" style={{ fontFamily: 'Syne, sans-serif', color: '#f1f5f9' }}>
+            <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+                <h3 className="text-base font-semibold" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
                     Client × Date Heatmap
                 </h3>
-                <div className="flex items-center gap-4 flex-wrap">
-                    {Object.entries(SIGNAL_COLORS).map(([sig, color]) => (
-                        <div key={sig} className="flex items-center gap-1.5">
-                            <div style={{ width: 10, height: 10, borderRadius: 3, background: color }} />
-                            <span style={{ fontSize: 11, color: '#64748b', fontFamily: 'Inter, sans-serif' }}>
+                <div className="flex items-center gap-3 flex-wrap">
+                    {Object.entries(SIGNAL_COLORS_RAW).map(([sig, color]) => (
+                        <div key={sig} className="flex items-center gap-1">
+                            <div style={{ width: 8, height: 8, borderRadius: 2, background: color }} />
+                            <span style={{ fontSize: 10, color: 'var(--text-muted)', fontFamily: 'Inter, sans-serif' }}>
                                 {signalConfig[sig]?.label}
                             </span>
                         </div>
                     ))}
-                    <div className="flex items-center gap-1.5">
-                        <div style={{ width: 10, height: 10, borderRadius: 3, background: '#111111', border: '1px solid rgba(255,255,255,0.08)' }} />
-                        <span style={{ fontSize: 11, color: '#64748b', fontFamily: 'Inter, sans-serif' }}>No log</span>
+                    <div className="flex items-center gap-1">
+                        <div style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--cell-empty-bg)', border: '1px solid var(--cell-empty-border)' }} />
+                        <span style={{ fontSize: 10, color: 'var(--text-muted)', fontFamily: 'Inter, sans-serif' }}>No log</span>
                     </div>
                 </div>
             </div>
 
             {clients.length === 0 ? (
-                <div className="flex items-center justify-center h-64" style={{ color: '#64748b' }}>No data</div>
+                <div className="flex items-center justify-center h-64" style={{ color: 'var(--text-muted)' }}>No data</div>
             ) : (
                 <div className="overflow-x-auto">
-                    <div style={{ minWidth: 600 }}>
+                    <div style={{ minWidth: 500 }}>
                         {/* Header row */}
-                        <div className="flex items-center gap-1 mb-1" style={{ paddingLeft: 140 }}>
+                        <div className="flex items-center gap-px mb-px" style={{ paddingLeft: 100 }}>
                             {dates.map((d) => (
                                 <div
                                     key={d}
                                     style={{
-                                        flex: '1 1 0', minWidth: 28, textAlign: 'center', fontSize: 9,
-                                        color: '#475569', fontFamily: 'Inter, sans-serif',
+                                        flex: '1 1 0', minWidth: 14, textAlign: 'center', fontSize: 7,
+                                        color: 'var(--text-dim)', fontFamily: 'Inter, sans-serif',
                                         transform: 'rotate(-45deg)',
                                         transformOrigin: 'left bottom',
-                                        height: 40,
+                                        height: 30,
                                         display: 'flex', alignItems: 'flex-end',
                                         overflow: 'hidden',
                                     }}
@@ -143,17 +149,17 @@ export default function HeatmapGrid({ logs, onCellClick, dateRange }) {
                                     {d.slice(5)}
                                 </div>
                             ))}
-                            <div style={{ width: 72, flexShrink: 0, textAlign: 'center', fontSize: 9, color: '#475569', fontFamily: 'Syne, sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Score</div>
+                            <div style={{ width: 56, flexShrink: 0, textAlign: 'center', fontSize: 7, color: 'var(--text-dim)', fontFamily: 'Syne, sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Score</div>
                         </div>
 
                         {/* Rows */}
                         {clients.map((client) => (
-                            <div key={client} className="flex items-center gap-1 mb-1">
+                            <div key={client} className="flex items-center gap-px mb-px">
                                 <div
                                     style={{
-                                        width: 132, flexShrink: 0, fontSize: 12, color: '#94a3b8',
+                                        width: 96, flexShrink: 0, fontSize: 10, color: 'var(--text-secondary)',
                                         fontFamily: 'Inter, sans-serif', textAlign: 'right',
-                                        paddingRight: 8, whiteSpace: 'nowrap', overflow: 'hidden',
+                                        paddingRight: 4, whiteSpace: 'nowrap', overflow: 'hidden',
                                         textOverflow: 'ellipsis',
                                     }}
                                     title={client}
@@ -162,19 +168,19 @@ export default function HeatmapGrid({ logs, onCellClick, dateRange }) {
                                 </div>
                                 {dates.map((date) => {
                                     const log = grid[client][date]
-                                    const color = log ? SIGNAL_COLORS[log.performance_signal] || '#222222' : null
+                                    const color = log ? SIGNAL_COLORS_RAW[log.performance_signal] || '#222222' : null
                                     return (
                                         <div
                                             key={date}
                                             className="heatmap-cell"
                                             style={{
                                                 flex: '1 1 0',
-                                                minWidth: 28,
+                                                minWidth: 14,
                                                 width: 'auto',
-                                                height: 28,
-                                                background: color || '#111111',
-                                                border: color ? `1px solid ${color}40` : '1px solid rgba(255,255,255,0.04)',
-                                                opacity: color ? 1 : 0.4,
+                                                height: 16,
+                                                background: color || 'var(--cell-empty-bg)',
+                                                border: color ? `1px solid ${color}40` : '1px solid var(--cell-empty-border)',
+                                                opacity: color ? 0.85 : 0.3,
                                             }}
                                             onMouseEnter={(e) => {
                                                 setHoveredLog(log)
@@ -187,12 +193,13 @@ export default function HeatmapGrid({ logs, onCellClick, dateRange }) {
                                     )
                                 })}
                                 {/* Consistency score */}
-                                <div style={{ width: 72, flexShrink: 0, textAlign: 'center' }}>
+                                <div style={{ width: 56, flexShrink: 0, textAlign: 'center' }}>
                                     {consistencyScore[client] !== null ? (
                                         <span
-                                            className="text-xs font-semibold px-2 py-0.5 rounded-md"
+                                            className="text-xs font-semibold px-1.5 py-0.5 rounded-md"
                                             style={{
                                                 fontFamily: 'Inter, sans-serif',
+                                                fontSize: 10,
                                                 background: consistencyScore[client] >= 70 ? 'rgba(74,222,128,0.12)' : consistencyScore[client] >= 40 ? 'rgba(245,200,66,0.12)' : 'rgba(255,77,109,0.12)',
                                                 color: consistencyScore[client] >= 70 ? '#4ade80' : consistencyScore[client] >= 40 ? '#f5c842' : '#ff4d6d',
                                             }}
@@ -200,7 +207,7 @@ export default function HeatmapGrid({ logs, onCellClick, dateRange }) {
                                             {consistencyScore[client]}%
                                         </span>
                                     ) : (
-                                        <span style={{ color: '#222222', fontSize: 11 }}>—</span>
+                                        <span style={{ color: 'var(--text-invisible)', fontSize: 10 }}>—</span>
                                     )}
                                 </div>
                             </div>

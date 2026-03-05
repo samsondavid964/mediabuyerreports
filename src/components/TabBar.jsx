@@ -4,10 +4,12 @@ import { useRef, useEffect, useState } from 'react'
 
 const tabs = [
     { id: 'summary', label: 'Summary', icon: '◉' },
-    { id: 'performance', label: 'Performance Overview', icon: '◈' },
+    { id: 'performance', label: 'Performance', icon: '◈' },
     { id: 'heatmap', label: 'Heatmap', icon: '▦' },
     { id: 'risk', label: 'Risk Radar', icon: '⚠' },
-    { id: 'deepdive', label: 'Deep Dive', icon: '⬡' },
+    { id: 'clientdeepdive', label: 'Client Deep Dive', icon: '🔍' },
+    { id: 'techissues', label: 'Tech Issues', icon: '⚙' },
+    { id: 'alldata', label: 'All Data', icon: '⬡' },
 ]
 
 export default function TabBar({ activeTab, onTabChange }) {
@@ -26,7 +28,7 @@ export default function TabBar({ activeTab, onTabChange }) {
     }, [activeTab])
 
     return (
-        <nav className="relative px-6 pt-2" style={{ background: 'rgba(5, 5, 5, 0.95)' }}>
+        <nav className="relative px-6 pt-2" style={{ background: 'var(--glass-bg)' }}>
             <div className="flex gap-1 overflow-x-auto pb-0 scrollbar-hide relative">
                 {tabs.map((tab) => (
                     <button
@@ -36,8 +38,8 @@ export default function TabBar({ activeTab, onTabChange }) {
                         className="relative px-5 py-3 text-sm font-medium whitespace-nowrap transition-all duration-300 rounded-t-xl"
                         style={{
                             fontFamily: 'Syne, sans-serif',
-                            color: activeTab === tab.id ? '#00e5cc' : '#64748b',
-                            background: activeTab === tab.id ? 'rgba(0, 229, 204, 0.06)' : 'transparent',
+                            color: activeTab === tab.id ? 'var(--accent-teal)' : 'var(--text-muted)',
+                            background: activeTab === tab.id ? 'var(--accent-teal-bg)' : 'transparent',
                         }}
                     >
                         <span className="mr-2">{tab.icon}</span>
@@ -49,7 +51,7 @@ export default function TabBar({ activeTab, onTabChange }) {
                     style={{
                         left: indicator.left,
                         width: indicator.width,
-                        background: 'linear-gradient(90deg, #00e5cc, #00b4d8)',
+                        background: 'linear-gradient(90deg, var(--accent-teal), var(--accent-blue))',
                         borderRadius: '2px 2px 0 0',
                     }}
                 />

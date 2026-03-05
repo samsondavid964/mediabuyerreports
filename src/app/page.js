@@ -8,7 +8,9 @@ import SummaryTab from '@/components/tabs/SummaryTab'
 import PerformanceTab from '@/components/tabs/PerformanceTab'
 import HeatmapTab from '@/components/tabs/HeatmapTab'
 import RiskTab from '@/components/tabs/RiskTab'
-import DeepDiveTab from '@/components/tabs/DeepDiveTab'
+import ClientDeepDiveTab from '@/components/tabs/ClientDeepDiveTab'
+import TechIssuesTab from '@/components/tabs/TechIssuesTab'
+import AllDataTab from '@/components/tabs/AllDataTab'
 
 function getDefaultDates() {
   const end = new Date()
@@ -71,17 +73,17 @@ export default function DashboardPage() {
         {error && !loading && (
           <div className="glass-card p-8 mb-6 text-center animate-fade-in">
             <div className="text-3xl mb-3">⚠️</div>
-            <h3 className="text-lg font-bold mb-2" style={{ fontFamily: 'Syne, sans-serif', color: '#ff4d6d' }}>
+            <h3 className="text-lg font-bold mb-2" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--accent-coral)' }}>
               Failed to Load Data
             </h3>
-            <p className="text-sm mb-4" style={{ color: '#94a3b8' }}>{error}</p>
+            <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>{error}</p>
             <button
               onClick={fetchLogs}
               className="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300"
               style={{
-                background: 'rgba(0,229,204,0.08)',
-                border: '1px solid rgba(0,229,204,0.2)',
-                color: '#00e5cc',
+                background: 'var(--accent-teal-bg)',
+                border: '1px solid var(--border-glow)',
+                color: 'var(--accent-teal)',
                 fontFamily: 'Syne, sans-serif',
                 cursor: 'pointer',
               }}
@@ -95,10 +97,10 @@ export default function DashboardPage() {
         {!loading && !error && logs.length === 0 && (
           <div className="glass-card p-8 mb-6 text-center animate-fade-in">
             <div className="text-3xl mb-3">📭</div>
-            <h3 className="text-lg font-bold mb-2" style={{ fontFamily: 'Syne, sans-serif', color: '#f1f5f9' }}>
+            <h3 className="text-lg font-bold mb-2" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
               No logs found
             </h3>
-            <p className="text-sm" style={{ color: '#64748b' }}>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
               No daily logs exist for the selected date range ({startDate} → {endDate}). Try widening the range.
             </p>
           </div>
@@ -109,12 +111,14 @@ export default function DashboardPage() {
         {activeTab === 'performance' && <PerformanceTab {...tabProps} />}
         {activeTab === 'heatmap' && <HeatmapTab {...tabProps} />}
         {activeTab === 'risk' && <RiskTab {...tabProps} />}
-        {activeTab === 'deepdive' && <DeepDiveTab {...tabProps} />}
+        {activeTab === 'clientdeepdive' && <ClientDeepDiveTab {...tabProps} />}
+        {activeTab === 'techissues' && <TechIssuesTab {...tabProps} />}
+        {activeTab === 'alldata' && <AllDataTab {...tabProps} />}
       </main>
 
       {/* Footer */}
-      <footer className="px-6 py-4 mt-8 border-t text-center" style={{ borderColor: 'rgba(255,255,255,0.04)' }}>
-        <p style={{ color: '#222222', fontSize: 11, fontFamily: 'Inter, sans-serif' }}>
+      <footer className="px-6 py-4 mt-8 border-t text-center" style={{ borderColor: 'var(--border-subtle)' }}>
+        <p style={{ color: 'var(--footer-color)', fontSize: 11, fontFamily: 'Inter, sans-serif' }}>
           AD-LAB PERFORMANCE INTELLIGENCE • {new Date().getFullYear()}
         </p>
       </footer>

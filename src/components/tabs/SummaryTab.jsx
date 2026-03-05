@@ -2,7 +2,9 @@
 
 import KPITiles from '@/components/summary/KPITiles'
 import SignalDonut from '@/components/summary/SignalDonut'
-import ActivityFeed from '@/components/summary/ActivityFeed'
+import AlertsUrgent from '@/components/summary/AlertsUrgent'
+import RecentWinsSummary from '@/components/summary/RecentWinsSummary'
+import StagnantAccounts from '@/components/summary/StagnantAccounts'
 import { SkeletonCard, SkeletonChart } from '@/components/SkeletonLoader'
 
 export default function SummaryTab({ logs, loading }) {
@@ -16,6 +18,10 @@ export default function SummaryTab({ logs, loading }) {
                     <SkeletonChart height="280px" />
                     <SkeletonChart height="280px" />
                 </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <SkeletonChart height="200px" />
+                    <SkeletonChart height="200px" />
+                </div>
             </div>
         )
     }
@@ -25,7 +31,11 @@ export default function SummaryTab({ logs, loading }) {
             <KPITiles logs={logs} />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <SignalDonut logs={logs} />
-                <ActivityFeed logs={logs} />
+                <AlertsUrgent logs={logs} />
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <RecentWinsSummary logs={logs} />
+                <StagnantAccounts logs={logs} />
             </div>
         </div>
     )
