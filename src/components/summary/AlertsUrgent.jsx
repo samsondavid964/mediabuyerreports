@@ -28,16 +28,6 @@ export default function AlertsUrgent({ logs }) {
                     detail: latest.blockers_problems || latest.waiting_on || null,
                 })
             }
-            if (isSubstantive(latest.blockers_problems) && !atRiskSignals.includes(latest.performance_signal)) {
-                items.push({
-                    type: 'blocker',
-                    severity: 'warning',
-                    client,
-                    date: latest.date,
-                    signal: latest.performance_signal,
-                    detail: latest.blockers_problems,
-                })
-            }
         })
 
         return items.sort((a, b) => {
