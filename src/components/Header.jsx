@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import DateRangePicker from './DateRangePicker'
 
-export default function Header({ startDate, endDate, onStartDateChange, onEndDateChange }) {
+export default function Header({ startDate, endDate, onStartDateChange, onEndDateChange, onLogout }) {
     const [theme, setTheme] = useState('dark')
 
     useEffect(() => {
@@ -54,6 +54,47 @@ export default function Header({ startDate, endDate, onStartDateChange, onEndDat
                 >
                     {theme === 'dark' ? '☀️' : '🌙'}
                 </button>
+                {onLogout && (
+                    <button
+                        onClick={onLogout}
+                        title="Log out"
+                        style={{
+                            height: 38,
+                            padding: '0 16px',
+                            borderRadius: 12,
+                            border: '1px solid var(--border-subtle)',
+                            background: 'var(--bg-surface)',
+                            color: 'var(--text-muted)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 6,
+                            fontSize: 13,
+                            fontFamily: 'Inter, sans-serif',
+                            fontWeight: 500,
+                            transition: 'all 0.3s ease',
+                            whiteSpace: 'nowrap',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.borderColor = 'var(--accent-coral)'
+                            e.currentTarget.style.color = 'var(--accent-coral)'
+                            e.currentTarget.style.background = 'rgba(255,77,109,0.06)'
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.borderColor = 'var(--border-subtle)'
+                            e.currentTarget.style.color = 'var(--text-muted)'
+                            e.currentTarget.style.background = 'var(--bg-surface)'
+                        }}
+                    >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                        Log Out
+                    </button>
+                )}
+
             </div>
         </header>
     )

@@ -1,7 +1,9 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/contexts/AuthContext'
 import Header from '@/components/Header'
 import TabBar from '@/components/TabBar'
 import SummaryTab from '@/components/tabs/SummaryTab'
@@ -11,6 +13,7 @@ import RiskTab from '@/components/tabs/RiskTab'
 import ClientDeepDiveTab from '@/components/tabs/ClientDeepDiveTab'
 import TechIssuesTab from '@/components/tabs/TechIssuesTab'
 import AllDataTab from '@/components/tabs/AllDataTab'
+
 
 function getDefaultDates() {
   const end = new Date()
@@ -23,6 +26,8 @@ function getDefaultDates() {
 }
 
 export default function DashboardPage() {
+  const router = useRouter()
+  const { user, loading: authLoading, signOut } = useAuth()
   const defaults = getDefaultDates()
   const [startDate, setStartDate] = useState(defaults.start)
   const [endDate, setEndDate] = useState(defaults.end)
@@ -30,6 +35,14 @@ export default function DashboardPage() {
   const [logs, setLogs] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace('/login')
+    }
+  }, [authLoading, user, router])
+
 
   const fetchLogs = useCallback(async () => {
     setLoading(true)
@@ -58,6 +71,27 @@ export default function DashboardPage() {
 
   const tabProps = { logs, loading, dateRange: { start: startDate, end: endDate } }
 
+  // Show spinner while auth state loads or while redirecting
+  if (authLoading || !user) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'var(--bg-primary)',
+      }}>
+        <div style={{
+          width: 40, height: 40, borderRadius: '50%',
+          border: '3px solid var(--border-subtle)',
+          borderTopColor: 'var(--accent-teal)',
+          animation: 'spin 0.8s linear infinite',
+        }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    )
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)' }}>
       <Header
@@ -65,6 +99,7 @@ export default function DashboardPage() {
         endDate={endDate}
         onStartDateChange={setStartDate}
         onEndDateChange={setEndDate}
+        onLogout={signOut}
       />
       <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
 

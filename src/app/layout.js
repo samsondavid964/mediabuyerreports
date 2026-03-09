@@ -1,4 +1,5 @@
 import "./globals.css";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 export const metadata = {
   title: "Ad-Lab | Performance Intelligence Dashboard",
@@ -23,7 +24,9 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className="antialiased" suppressHydrationWarning>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
