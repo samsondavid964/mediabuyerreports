@@ -10,6 +10,8 @@ const tabs = [
     { id: 'clientdeepdive', label: 'Client Deep Dive', icon: '🔍' },
     { id: 'techissues', label: 'Tech Issues', icon: '⚙' },
     { id: 'alldata', label: 'All Data', icon: '⬡' },
+    { id: 'churned', label: 'Churned', icon: '📉' },
+    { id: 'gmcissues', label: 'GMC Issues', icon: '⏳' },
 ]
 
 export default function TabBar({ activeTab, onTabChange }) {

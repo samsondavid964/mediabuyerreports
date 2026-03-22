@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import { signalConfig, signalOrder } from '@/lib/signalConfig'
 import { SkeletonTable } from '@/components/SkeletonLoader'
 
@@ -42,6 +42,14 @@ export default function AllDataTab({ logs, loading }) {
     const [keyword, setKeyword] = useState('')
     const [sortKey, setSortKey] = useState('date')
     const [sortDir, setSortDir] = useState('desc')
+    const [expandedClients, setExpandedClients] = useState({})
+
+    const toggleClient = (client) => {
+        setExpandedClients(prev => ({
+            ...prev,
+            [client]: !prev[client]
+        }))
+    }
 
     const clients = useMemo(() => {
         return [...new Set(logs.map((l) => l.client_name))].sort()
@@ -77,7 +85,7 @@ export default function AllDataTab({ logs, loading }) {
         else { setSortKey(key); setSortDir('desc') }
     }
 
-    const SortIcon = ({ col }) => (
+    const renderSortIcon = (col) => (
         <span style={{ color: sortKey === col ? 'var(--accent-teal)' : 'var(--text-invisible)', marginLeft: 4, fontSize: 10 }}>
             {sortKey === col ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}
         </span>
@@ -175,26 +183,57 @@ export default function AllDataTab({ logs, loading }) {
                                             style={{ cursor: col.sortable ? 'pointer' : 'default', userSelect: 'none', whiteSpace: 'nowrap' }}
                                         >
                                             {col.label}
-                                            {col.sortable && <SortIcon col={col.key} />}
+                                            {col.sortable && renderSortIcon(col.key)}
                                         </th>
                                     ))}
                                 </tr>
                             </thead>
                             <tbody>
-                                {filtered.map((log) => (
-                                    <tr key={log.id}>
-                                        <td style={{ whiteSpace: 'nowrap', color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif' }}>{log.date}</td>
-                                        <td>
-                                            <span style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif', fontWeight: 600, whiteSpace: 'nowrap' }}>{log.client_name}</span>
-                                        </td>
-                                        <td><SignalPill signal={log.performance_signal} /></td>
-                                        <td><ExpandableCell text={log.successes} /></td>
-                                        <td><ExpandableCell text={log.blockers_problems} /></td>
-                                        <td><ExpandableCell text={log.account_changes} /></td>
-                                        <td><ExpandableCell text={log.planned_for_tomorrow} /></td>
-                                        <td><ExpandableCell text={log.waiting_on} /></td>
-                                        <td><ExpandableCell text={log.tech_setup_issues} /></td>
-                                    </tr>
+                                {Object.entries(
+                                    filtered.reduce((acc, log) => {
+                                        if (!acc[log.client_name]) acc[log.client_name] = [];
+                                        acc[log.client_name].push(log);
+                                        return acc;
+                                    }, {})
+                                ).sort(([clientA], [clientB]) => clientA.localeCompare(clientB))
+                                .map(([client, clientLogs]) => (
+                                    <React.Fragment key={client}>
+                                        <tr 
+                                            style={{ background: 'rgba(255,255,255,0.03)', cursor: 'pointer' }}
+                                            onClick={() => toggleClient(client)}
+                                        >
+                                            <td colSpan={columns.length} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-subtle)' }}>
+                                                <div className="flex items-center justify-between">
+                                                    <div>
+                                                        <span className="font-semibold text-sm" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--accent-teal)' }}>
+                                                            {client}
+                                                        </span>
+                                                        <span className="ml-2 text-xs" style={{ color: 'var(--text-muted)' }}>
+                                                            ({clientLogs.length} entries)
+                                                        </span>
+                                                    </div>
+                                                    <span style={{ color: 'var(--accent-teal)', fontSize: '12px', fontWeight: 600 }}>
+                                                        {expandedClients[client] ? '▼ Collapse' : '▶ Expand'}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {expandedClients[client] && clientLogs.map((log) => (
+                                            <tr key={log.id}>
+                                                <td style={{ whiteSpace: 'nowrap', color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif' }}>{log.date}</td>
+                                                <td>
+                                                    <span style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif', fontWeight: 600, whiteSpace: 'nowrap' }}>{log.client_name}</span>
+                                                </td>
+                                                <td><SignalPill signal={log.performance_signal} /></td>
+                                                <td><ExpandableCell text={log.successes} /></td>
+                                                <td><ExpandableCell text={log.blockers_problems} /></td>
+                                                <td><ExpandableCell text={log.account_changes} /></td>
+                                                <td><ExpandableCell text={log.planned_for_tomorrow} /></td>
+                                                <td><ExpandableCell text={log.waiting_on} /></td>
+                                                <td><ExpandableCell text={log.tech_setup_issues} /></td>
+                                            </tr>
+                                        ))}
+                                    </React.Fragment>
                                 ))}
                             </tbody>
                         </table>

@@ -13,7 +13,8 @@ import RiskTab from '@/components/tabs/RiskTab'
 import ClientDeepDiveTab from '@/components/tabs/ClientDeepDiveTab'
 import TechIssuesTab from '@/components/tabs/TechIssuesTab'
 import AllDataTab from '@/components/tabs/AllDataTab'
-
+import ChurnTab from '@/components/tabs/ChurnTab'
+import GmcIssuesTab from '@/components/tabs/GmcIssuesTab'
 
 function getDefaultDates() {
   const end = new Date()
@@ -149,6 +150,8 @@ export default function DashboardPage() {
         {activeTab === 'clientdeepdive' && <ClientDeepDiveTab {...tabProps} />}
         {activeTab === 'techissues' && <TechIssuesTab {...tabProps} />}
         {activeTab === 'alldata' && <AllDataTab {...tabProps} />}
+        {activeTab === 'churned' && <ChurnTab {...tabProps} />}
+        {activeTab === 'gmcissues' && <GmcIssuesTab {...tabProps} />}
       </main>
 
       {/* Footer */}
