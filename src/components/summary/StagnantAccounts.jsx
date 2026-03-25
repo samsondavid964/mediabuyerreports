@@ -31,19 +31,19 @@ export default function StagnantAccounts({ logs }) {
     return (
         <div className="elevated-card p-6 animate-fade-in-up" style={{ animationDelay: '500ms' }}>
             <div className="flex items-center gap-3 mb-4">
-                <span style={{ fontSize: 16 }}>⏸️</span>
-                <h3 className="text-base font-semibold" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
+                <span style={{ fontSize: 20 }}>⏸️</span>
+                <h3 className="text-lg font-semibold" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
                     Stagnant Accounts
                 </h3>
                 {stagnant.length > 0 && (
-                    <span className="text-xs px-2 py-0.5 rounded-md" style={{ background: 'rgba(245,200,66,0.12)', color: 'var(--accent-yellow)' }}>
+                    <span className="text-sm px-2.5 py-1 rounded-md" style={{ background: 'rgba(245,200,66,0.12)', color: 'var(--accent-yellow)' }}>
                         {stagnant.length}
                     </span>
                 )}
             </div>
             <div className="flex flex-col gap-2.5 max-h-[300px] overflow-y-auto pr-1">
                 {stagnant.length === 0 ? (
-                    <div className="text-sm py-6 text-center" style={{ color: 'var(--text-muted)' }}>No stagnant accounts detected</div>
+                    <div className="text-base py-6 text-center" style={{ color: 'var(--text-muted)' }}>No stagnant accounts detected</div>
                 ) : (
                     stagnant.map((item, i) => {
                         const cfg = signalConfig[item.signal] || { color: 'var(--text-muted)', bg: 'var(--bg-surface)', label: item.signal }
@@ -54,14 +54,14 @@ export default function StagnantAccounts({ logs }) {
                                 style={{ background: 'var(--row-stripe)', border: '1px solid var(--border-subtle)' }}
                             >
                                 <div className="flex flex-col gap-1 min-w-0">
-                                    <span className="font-semibold text-sm truncate" style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif' }}>
+                                    <span className="font-semibold text-base truncate" style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif' }}>
                                         {item.client}
                                     </span>
-                                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                                    <span className="text-sm" style={{ color: 'var(--text-muted)' }}>
                                         {item.days} Mixed/Watching entries • since {item.since}
                                     </span>
                                 </div>
-                                <span className="signal-pill text-xs flex-shrink-0" style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.color}30` }}>
+                                <span className="signal-pill text-sm flex-shrink-0" style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.color}30` }}>
                                     <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: cfg.color }} />
                                     {cfg.label}
                                 </span>

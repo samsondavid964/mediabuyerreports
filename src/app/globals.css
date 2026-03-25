@@ -91,7 +91,7 @@ body {
   padding: 0;
   background: var(--bg-primary);
   color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -101,7 +101,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Outfit', sans-serif;
 }
 
 /* Glassmorphism Card */
@@ -324,7 +324,7 @@ h6 {
 
 .recharts-text {
   fill: var(--text-secondary) !important;
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
   font-size: 11px !important;
 }
 
@@ -335,7 +335,7 @@ input[type="date"] {
   color: var(--text-primary);
   padding: 8px 12px;
   border-radius: 10px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 13px;
   outline: none;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -361,7 +361,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .data-table th {
   text-align: left;
   padding: 12px 16px;
-  font-family: 'Syne', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
@@ -411,7 +411,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .custom-tooltip .label {
   color: var(--text-primary);
-  font-family: 'Syne', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-weight: 600;
   margin-bottom: 6px;
 }

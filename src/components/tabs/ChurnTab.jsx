@@ -75,9 +75,9 @@ export default function ChurnTab({ logs, loading, dateRange }) {
         <div className="space-y-6">
             <div className="glass-card p-6 animate-fade-in-up">
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-base font-semibold" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
+                    <h3 className="text-lg font-semibold" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
                         Churned Clients
-                        <span className="ml-2 text-xs" style={{ color: 'var(--text-muted)' }}>(&gt; 5 days since last EOD)</span>
+                        <span className="ml-2 text-sm" style={{ color: 'var(--text-muted)' }}>(&gt; 5 days since last EOD)</span>
                     </h3>
                 </div>
 
@@ -108,20 +108,20 @@ export default function ChurnTab({ logs, loading, dateRange }) {
                                 {churnedClients.map((client) => (
                                     <tr key={client.client_name}>
                                         <td>
-                                            <span style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif', fontWeight: 600 }}>
+                                            <span style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: 16 }}>
                                                 {client.client_name}
                                             </span>
                                         </td>
-                                        <td style={{ color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif' }}>
+                                        <td style={{ color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif', fontSize: 14 }}>
                                             {client.lastDate}
                                         </td>
                                         <td>
                                             <span style={{
                                                 background: 'rgba(255, 107, 107, 0.1)',
                                                 color: 'var(--accent-coral)',
-                                                padding: '4px 8px',
+                                                padding: '4px 10px',
                                                 borderRadius: '6px',
-                                                fontSize: '13px',
+                                                fontSize: '14px',
                                                 fontWeight: 600
                                             }}>
                                                 {client.daysSince} days

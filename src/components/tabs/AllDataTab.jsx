@@ -7,7 +7,7 @@ import { SkeletonTable } from '@/components/SkeletonLoader'
 function SignalPill({ signal }) {
     const cfg = signalConfig[signal] || { color: 'var(--text-muted)', bg: 'var(--bg-surface)', label: signal }
     return (
-        <span className="signal-pill text-xs" style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.color}30`, whiteSpace: 'nowrap' }}>
+        <span className="signal-pill text-sm" style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.color}30`, whiteSpace: 'nowrap' }}>
             <span style={{ width: 6, height: 6, borderRadius: '50%', background: cfg.color, display: 'inline-block' }} />
             {cfg.label}
         </span>
@@ -20,13 +20,13 @@ function ExpandableCell({ text, maxLen = 80 }) {
     const isLong = text.length > maxLen
     return (
         <div>
-            <span style={{ color: 'var(--text-secondary)', fontSize: 12 }}>
+            <span style={{ color: 'var(--text-secondary)', fontSize: 13 }}>
                 {expanded || !isLong ? text : `${text.slice(0, maxLen)}…`}
             </span>
             {isLong && (
                 <button
                     onClick={() => setExpanded(!expanded)}
-                    className="ml-1 text-xs"
+                    className="ml-1 text-sm"
                     style={{ color: 'var(--accent-teal)', cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
                 >
                     {expanded ? 'less' : 'more'}
@@ -158,16 +158,16 @@ export default function AllDataTab({ logs, loading }) {
                         minWidth: 180,
                     }}
                 />
-                <span style={{ color: 'var(--accent-teal)', fontFamily: 'Inter, sans-serif', fontSize: 13 }}>
+                <span style={{ color: 'var(--accent-teal)', fontFamily: 'Inter, sans-serif', fontSize: 14 }}>
                     {filtered.length} results
                 </span>
             </div>
 
             {/* Data table */}
             <div className="glass-card p-6 animate-fade-in-up">
-                <h3 className="text-base font-semibold mb-4" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
+                <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
                     All Data
-                    <span className="ml-2 text-xs" style={{ color: 'var(--text-muted)' }}>({filtered.length} entries)</span>
+                    <span className="ml-2 text-sm" style={{ color: 'var(--text-muted)' }}>({filtered.length} entries)</span>
                 </h3>
                 {filtered.length === 0 ? (
                     <div className="flex items-center justify-center py-12" style={{ color: 'var(--text-muted)' }}>No matching records found</div>
@@ -205,10 +205,10 @@ export default function AllDataTab({ logs, loading }) {
                                             <td colSpan={columns.length} style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-subtle)' }}>
                                                 <div className="flex items-center justify-between">
                                                     <div>
-                                                        <span className="font-semibold text-sm" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--accent-teal)' }}>
+                                                        <span className="font-semibold text-base" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--accent-teal)' }}>
                                                             {client}
                                                         </span>
-                                                        <span className="ml-2 text-xs" style={{ color: 'var(--text-muted)' }}>
+                                                        <span className="ml-2 text-sm" style={{ color: 'var(--text-muted)' }}>
                                                             ({clientLogs.length} entries)
                                                         </span>
                                                     </div>
@@ -220,9 +220,9 @@ export default function AllDataTab({ logs, loading }) {
                                         </tr>
                                         {expandedClients[client] && clientLogs.map((log) => (
                                             <tr key={log.id}>
-                                                <td style={{ whiteSpace: 'nowrap', color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif' }}>{log.date}</td>
+                                                <td style={{ whiteSpace: 'nowrap', color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif', fontSize: 14 }}>{log.date}</td>
                                                 <td>
-                                                    <span style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif', fontWeight: 600, whiteSpace: 'nowrap' }}>{log.client_name}</span>
+                                                    <span style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif', fontWeight: 600, whiteSpace: 'nowrap', fontSize: 15 }}>{log.client_name}</span>
                                                 </td>
                                                 <td><SignalPill signal={log.performance_signal} /></td>
                                                 <td><ExpandableCell text={log.successes} /></td>

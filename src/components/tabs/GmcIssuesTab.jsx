@@ -161,9 +161,9 @@ export default function GmcIssuesTab({ logs, loading }) {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Pending Issues */}
                 <div className="glass-card p-6 animate-fade-in-up">
-                    <h3 className="text-base font-semibold mb-4 flex items-center gap-2" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--accent-yellow)' }}>
-                        <span className="text-xl">⏳</span> Pending GMC Issues
-                        <span className="ml-auto text-xs px-2 py-1 rounded" style={{ background: 'rgba(245,200,66,0.1)', color: 'inherit' }}>
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--accent-yellow)' }}>
+                        <span className="text-2xl">⏳</span> Pending GMC Issues
+                        <span className="ml-auto text-sm px-2.5 py-1 rounded" style={{ background: 'rgba(245,200,66,0.1)', color: 'inherit' }}>
                             {pendingIssues.length} active
                         </span>
                     </h3>
@@ -178,8 +178,8 @@ export default function GmcIssuesTab({ logs, loading }) {
                             {pendingIssues.map(issue => (
                                 <div key={issue.client_name} className="p-4 rounded-xl flex items-center justify-between" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-subtle)' }}>
                                     <div>
-                                        <div className="font-semibold text-sm mb-1" style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif' }}>{issue.client_name}</div>
-                                        <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                                        <div className="font-semibold text-base mb-1" style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif' }}>{issue.client_name}</div>
+                                        <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                                             Reported: {issue.reported_at} 
                                             <span className="ml-2 font-medium" style={{ color: 'var(--accent-coral)' }}>({issue.daysPending} days ago)</span>
                                         </div>
@@ -187,7 +187,7 @@ export default function GmcIssuesTab({ logs, loading }) {
                                     <button
                                         onClick={() => handleResolve(issue)}
                                         disabled={submitting === issue.client_name}
-                                        className="px-4 py-2 rounded-lg text-xs font-semibold transition-all"
+                                        className="px-4 py-2 rounded-lg text-sm font-semibold transition-all"
                                         style={{ 
                                             background: submitting === issue.client_name ? 'var(--bg-surface)' : 'var(--accent-teal-bg)', 
                                             color: submitting === issue.client_name ? 'var(--text-muted)' : 'var(--accent-teal)',
@@ -204,9 +204,9 @@ export default function GmcIssuesTab({ logs, loading }) {
 
                 {/* Resolved Issues */}
                 <div className="glass-card p-6 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
-                    <h3 className="text-base font-semibold mb-4 flex items-center gap-2" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--accent-green)' }}>
-                        <span className="text-xl">✅</span> Resolved GMC Issues
-                        <span className="ml-auto text-xs px-2 py-1 rounded" style={{ background: 'rgba(57, 255, 160, 0.1)', color: 'inherit' }}>
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--accent-green)' }}>
+                        <span className="text-2xl">✅</span> Resolved GMC Issues
+                        <span className="ml-auto text-sm px-2.5 py-1 rounded" style={{ background: 'rgba(57, 255, 160, 0.1)', color: 'inherit' }}>
                             {resolvedIssues.length} total
                         </span>
                     </h3>
@@ -220,12 +220,12 @@ export default function GmcIssuesTab({ logs, loading }) {
                             {resolvedIssues.map(issue => (
                                 <div key={issue.id} className="p-4 rounded-xl flex items-center justify-between" style={{ background: 'rgba(57, 255, 160, 0.03)', border: '1px solid rgba(57, 255, 160, 0.1)' }}>
                                     <div>
-                                        <div className="font-semibold text-sm mb-1" style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif' }}>{issue.client_name}</div>
-                                        <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                                        <div className="font-semibold text-base mb-1" style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif' }}>{issue.client_name}</div>
+                                        <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                                             Reported: {issue.reported_at} • Resolved: {new Date(issue.resolved_at).toLocaleDateString()}
                                         </div>
                                     </div>
-                                    <div className="text-xs font-semibold px-2 py-1 rounded" style={{ background: 'rgba(57, 255, 160, 0.1)', color: 'var(--accent-green)' }}>
+                                    <div className="text-sm font-semibold px-2 py-1 rounded" style={{ background: 'rgba(57, 255, 160, 0.1)', color: 'var(--accent-green)' }}>
                                         Took {issue.daysTaken} days
                                     </div>
                                 </div>

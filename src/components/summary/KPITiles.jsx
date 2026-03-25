@@ -32,10 +32,10 @@ function KPICard({ title, value, suffix = '', icon, accentColor, subtext, delay 
         >
             <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl" style={{ background: accentColor }} />
             <div className="flex items-center justify-between">
-                <span className="text-xs uppercase tracking-widest font-medium" style={{ color: 'var(--text-muted)', fontFamily: 'Syne, sans-serif' }}>
+                <span className="text-base uppercase tracking-widest font-semibold" style={{ color: 'var(--text-muted)', fontFamily: 'Syne, sans-serif' }}>
                     {title}
                 </span>
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center text-base"
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
                     style={{ background: `${accentColor}12`, color: accentColor }}>
                     {icon}
                 </div>
@@ -45,13 +45,13 @@ function KPICard({ title, value, suffix = '', icon, accentColor, subtext, delay 
                     {typeof value === 'number' ? animated : value}
                 </span>
                 {suffix && (
-                    <span className="text-xl font-semibold mb-0.5" style={{ color: accentColor }}>
+                    <span className="text-2xl font-semibold mb-1" style={{ color: accentColor }}>
                         {suffix}
                     </span>
                 )}
             </div>
             {subtext && (
-                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{subtext}</span>
+                <span className="text-base font-medium" style={{ color: 'var(--text-muted)' }}>{subtext}</span>
             )}
         </div>
     )

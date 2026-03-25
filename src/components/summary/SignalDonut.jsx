@@ -9,10 +9,10 @@ const CustomTooltip = ({ active, payload }) => {
     const d = payload[0]
     return (
         <div style={{ background: 'var(--tooltip-bg)', border: '1px solid var(--border-subtle)', borderRadius: 10, padding: '12px 16px' }}>
-            <div style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif', fontWeight: 600, marginBottom: 6 }}>
+            <div style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: 16, marginBottom: 6 }}>
                 {d.name}
             </div>
-            <div style={{ color: d.payload.color, fontSize: 13 }}>
+            <div style={{ color: d.payload.color, fontSize: 14 }}>
                 {d.value} logs ({d.payload.pct}%)
             </div>
         </div>
@@ -26,7 +26,7 @@ const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent
     const x = cx + radius * Math.cos(-midAngle * RADIAN)
     const y = cy + radius * Math.sin(-midAngle * RADIAN)
     return (
-        <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={12} fontFamily="Inter, sans-serif">
+        <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={14} fontFamily="Inter, sans-serif">
             {`${(percent * 100).toFixed(0)}%`}
         </text>
     )
@@ -52,7 +52,7 @@ export default function SignalDonut({ logs }) {
 
     return (
         <div className="elevated-card p-6 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-            <h3 className="text-base font-semibold mb-6" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
+            <h3 className="text-lg font-semibold mb-6" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
                 Signal Distribution
             </h3>
             {data.length === 0 ? (
@@ -82,7 +82,7 @@ export default function SignalDonut({ logs }) {
                         <Tooltip content={<CustomTooltip />} />
                         <Legend
                             formatter={(value, entry) => (
-                                <span style={{ color: 'var(--text-secondary)', fontSize: 12, fontFamily: 'Inter, sans-serif' }}>
+                                <span style={{ color: 'var(--text-secondary)', fontSize: 14, fontFamily: 'Inter, sans-serif' }}>
                                     {value}
                                 </span>
                             )}

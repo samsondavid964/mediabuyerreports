@@ -69,13 +69,13 @@ export default function AtRiskTable({ logs }) {
     if (data.length === 0) {
         return (
             <div className="glass-card p-6">
-                <h3 className="text-base font-semibold mb-4" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
+                <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
                     Risk Radar
                 </h3>
                 <div className="flex flex-col items-center justify-center py-12 gap-3">
                     <div className="text-3xl">🎉</div>
-                    <p style={{ color: 'var(--accent-green)', fontFamily: 'Syne, sans-serif', fontWeight: 600 }}>No accounts at risk!</p>
-                    <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>All accounts are performing well or being monitored.</p>
+                    <p style={{ color: 'var(--accent-green)', fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: 16 }}>No accounts at risk!</p>
+                    <p style={{ color: 'var(--text-muted)', fontSize: 14 }}>All accounts are performing well or being monitored.</p>
                 </div>
             </div>
         )
@@ -83,9 +83,9 @@ export default function AtRiskTable({ logs }) {
 
     return (
         <div className="glass-card p-6 animate-fade-in-up">
-            <h3 className="text-base font-semibold mb-4" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
+            <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
                 Risk Radar
-                <span className="ml-2 text-xs px-2 py-0.5 rounded-md" style={{ background: 'rgba(255,77,109,0.12)', color: 'var(--accent-coral)' }}>{data.length}</span>
+                <span className="ml-2 text-sm px-2.5 py-1 rounded-md" style={{ background: 'rgba(255,77,109,0.12)', color: 'var(--accent-coral)' }}>{data.length}</span>
             </h3>
             <div className="overflow-x-auto">
                 <table className="data-table">
@@ -117,26 +117,26 @@ export default function AtRiskTable({ logs }) {
                                     }}
                                 >
                                     <td>
-                                        <span style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif', fontWeight: 600 }}>{row.client}</span>
+                                        <span style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: 15 }}>{row.client}</span>
                                     </td>
                                     <td>
-                                        <span className="signal-pill text-xs" style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.color}30` }}>
+                                        <span className="signal-pill text-sm" style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.color}30` }}>
                                             <span style={{ width: 6, height: 6, borderRadius: '50%', background: cfg.color, display: 'inline-block' }} />
                                             {cfg.label}
                                         </span>
                                     </td>
                                     <td>
-                                        <span style={{ color: cfg.color, fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>{row.atRiskDays}</span>
-                                        <span style={{ color: 'var(--text-dim)', fontSize: 11 }}> days</span>
+                                        <span style={{ color: cfg.color, fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: 14 }}>{row.atRiskDays}</span>
+                                        <span style={{ color: 'var(--text-dim)', fontSize: 12 }}> days</span>
                                     </td>
                                     <td>
-                                        <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{row.date}</span>
+                                        <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>{row.date}</span>
                                     </td>
                                     <td>
-                                        <span className="line-clamp-2" style={{ maxWidth: 200, display: 'block', fontSize: 12 }}>{row.blockers}</span>
+                                        <span className="line-clamp-2" style={{ maxWidth: 220, display: 'block', fontSize: 14 }}>{row.blockers}</span>
                                     </td>
                                     <td>
-                                        <span className="line-clamp-2" style={{ maxWidth: 200, display: 'block', fontSize: 12 }}>{row.waitingOn}</span>
+                                        <span className="line-clamp-2" style={{ maxWidth: 220, display: 'block', fontSize: 14 }}>{row.waitingOn}</span>
                                     </td>
                                 </tr>
                             )
