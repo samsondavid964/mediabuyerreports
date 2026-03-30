@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
+import { fetchGmcIssues, resolveGmcIssue } from '@/lib/api'
 import { SkeletonTable } from '@/components/SkeletonLoader'
 
 export default function GmcIssuesTab({ logs, loading }) {
@@ -13,23 +13,10 @@ export default function GmcIssuesTab({ logs, loading }) {
     const fetchResolutions = async () => {
         try {
             setFetchingRezzies(true)
-            const { data, error } = await supabase
-                .from('gmc_issues')
-                .select('*')
-                .order('resolved_at', { ascending: false })
-            
-            if (error) {
-                // If table doesn't exist yet, don't crash, just gracefully show empty
-                if (error.code === '42P01') {
-                    setResolutions([])
-                } else {
-                    console.error("GMC Fetch error:", error)
-                }
-            } else {
-                setResolutions(data || [])
-            }
+            const data = await fetchGmcIssues()
+            setResolutions(data)
         } catch (err) {
-            console.error(err)
+            console.error("GMC Fetch error:", err)
         } finally {
             setFetchingRezzies(false)
         }
@@ -117,26 +104,10 @@ export default function GmcIssuesTab({ logs, loading }) {
     const handleResolve = async (issue) => {
         setSubmitting(issue.client_name)
         try {
-            const { error } = await supabase
-                .from('gmc_issues')
-                .insert([{
-                    client_name: issue.client_name,
-                    status: 'resolved',
-                    reported_at: issue.reported_at,
-                    resolved_at: new Date().toISOString()
-                }])
-            
-            if (error) {
-                setError(error.message)
-                if (error.code === '42P01') {
-                    // Provide helpful instructions if table doesn't exist
-                    setError("The 'gmc_issues' Supabase table does not exist. Please create it first.")
-                }
-            } else {
-                fetchResolutions()
-            }
+            await resolveGmcIssue(issue.client_name, issue.reported_at)
+            fetchResolutions()
         } catch (err) {
-            setError("Failed to resolve issue.")
+            setError(err.message || "Failed to resolve issue.")
         } finally {
             setSubmitting(null)
         }

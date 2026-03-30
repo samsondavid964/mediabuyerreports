@@ -2,13 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
-
-const ALLOWED_EMAILS = [
-    'tinus@ad-lab.io',
-    'stephan@ad-lab.io',
-    'jenelle@ad-lab.io',
-    'edafe@ad-lab.io',
-]
+import { ALLOWED_EMAILS } from '@/lib/constants'
 
 const AuthContext = createContext(null)
 
@@ -71,4 +65,3 @@ export function useAuth() {
     return ctx
 }
 
-export { ALLOWED_EMAILS }

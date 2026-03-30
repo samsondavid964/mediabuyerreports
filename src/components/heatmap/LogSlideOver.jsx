@@ -16,6 +16,16 @@ export default function LogSlideOver({ log, onClose }) {
         return () => { document.body.style.overflow = '' }
     }, [log])
 
+    // Close on Escape key
+    useEffect(() => {
+        if (!log) return
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') onClose()
+        }
+        document.addEventListener('keydown', handleKeyDown)
+        return () => document.removeEventListener('keydown', handleKeyDown)
+    }, [log, onClose])
+
     if (!log) return null
 
     const cfg = signalConfig[log.performance_signal] || { color: 'var(--text-muted)', bg: 'var(--bg-surface)', label: log.performance_signal }
@@ -51,6 +61,7 @@ export default function LogSlideOver({ log, onClose }) {
                         </h2>
                         <button
                             onClick={onClose}
+                            aria-label="Close panel"
                             className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors duration-200"
                             style={{ background: 'var(--row-hover)', color: 'var(--text-secondary)', border: 'none', cursor: 'pointer' }}
                         >

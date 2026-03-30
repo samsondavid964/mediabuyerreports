@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { SkeletonTable } from '@/components/SkeletonLoader'
+import { CHURN_THRESHOLD_DAYS } from '@/lib/constants'
 
 export default function ChurnTab({ logs, loading, dateRange }) {
     const [sortKey, setSortKey] = useState('daysSince')
@@ -31,7 +32,7 @@ export default function ChurnTab({ logs, loading, dateRange }) {
             const diffTime = Math.abs(today - logDate)
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
-            if (diffDays > 5) {
+            if (diffDays > CHURN_THRESHOLD_DAYS) {
                 churned.push({
                     client_name,
                     lastDate: log.date,
@@ -77,7 +78,7 @@ export default function ChurnTab({ logs, loading, dateRange }) {
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold" style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text-primary)' }}>
                         Churned Clients
-                        <span className="ml-2 text-sm" style={{ color: 'var(--text-muted)' }}>(&gt; 5 days since last EOD)</span>
+                        <span className="ml-2 text-sm" style={{ color: 'var(--text-muted)' }}>(&gt; {CHURN_THRESHOLD_DAYS} days since last EOD)</span>
                     </h3>
                 </div>
 

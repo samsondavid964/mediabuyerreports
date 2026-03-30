@@ -3,13 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-
-const ALLOWED_EMAILS = [
-    'tinus@ad-lab.io',
-    'stephan@ad-lab.io',
-    'jenelle@ad-lab.io',
-    'edafe@ad-lab.io',
-]
+import { ALLOWED_EMAILS } from '@/lib/constants'
 
 export default function LoginPage() {
     const router = useRouter()

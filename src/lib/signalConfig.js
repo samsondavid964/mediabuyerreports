@@ -21,10 +21,12 @@ export function getHealthScore(logs) {
     return Math.round(total / logs.length)
 }
 
+import { SUBSTANTIVE_MIN_LENGTH } from './constants'
+
 export function isSubstantive(text) {
     if (!text) return false
     const t = text.trim().toLowerCase().replace(/[.,!?;:]/g, '')
-    if (t.length < 2) return false
+    if (t.length < SUBSTANTIVE_MIN_LENGTH) return false
     const ignoreWords = [
         'none', 'na', 'n/a', 'no', 'nothing', 'all good',
         'no issues', 'none at the moment', 'not applicable',

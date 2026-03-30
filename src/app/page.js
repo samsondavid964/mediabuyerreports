@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { fetchDailyLogs } from '@/lib/api'
+import { DEFAULT_DATE_RANGE_DAYS } from '@/lib/constants'
 import { useAuth } from '@/contexts/AuthContext'
 import Header from '@/components/Header'
 import TabBar from '@/components/TabBar'
@@ -19,7 +20,7 @@ import GmcIssuesTab from '@/components/tabs/GmcIssuesTab'
 function getDefaultDates() {
   const end = new Date()
   const start = new Date()
-  start.setDate(start.getDate() - 30)
+  start.setDate(start.getDate() - DEFAULT_DATE_RANGE_DAYS)
   return {
     start: start.toISOString().split('T')[0],
     end: end.toISOString().split('T')[0],
@@ -36,6 +37,7 @@ export default function DashboardPage() {
   const [logs, setLogs] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const fetchIdRef = useRef(0)
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -44,25 +46,25 @@ export default function DashboardPage() {
     }
   }, [authLoading, user, router])
 
-
   const fetchLogs = useCallback(async () => {
+    const id = ++fetchIdRef.current
     setLoading(true)
     setError(null)
     try {
-      const { data, error: sbError } = await supabase
-        .from('daily_logs')
-        .select('*')
-        .gte('date', startDate)
-        .lte('date', endDate)
-        .order('date', { ascending: true })
-
-      if (sbError) throw sbError
-      setLogs(data || [])
+      const data = await fetchDailyLogs(startDate, endDate)
+      // Only apply results if this is still the latest request
+      if (id === fetchIdRef.current) {
+        setLogs(data)
+      }
     } catch (err) {
-      setError(err.message || 'Failed to load data from Supabase.')
-      setLogs([])
+      if (id === fetchIdRef.current) {
+        setError(err.message || 'Failed to load data from Supabase.')
+        setLogs([])
+      }
     } finally {
-      setLoading(false)
+      if (id === fetchIdRef.current) {
+        setLoading(false)
+      }
     }
   }, [startDate, endDate])
 

@@ -3,6 +3,8 @@
 import React, { useState, useMemo } from 'react'
 import { signalConfig, signalOrder } from '@/lib/signalConfig'
 import { SkeletonTable } from '@/components/SkeletonLoader'
+import { useDebounce } from '@/lib/useDebounce'
+import { exportCsv } from '@/lib/exportCsv'
 
 function SignalPill({ signal }) {
     const cfg = signalConfig[signal] || { color: 'var(--text-muted)', bg: 'var(--bg-surface)', label: signal }
@@ -40,6 +42,7 @@ export default function AllDataTab({ logs, loading }) {
     const [clientFilter, setClientFilter] = useState('')
     const [signalFilter, setSignalFilter] = useState('')
     const [keyword, setKeyword] = useState('')
+    const debouncedKeyword = useDebounce(keyword, 300)
     const [sortKey, setSortKey] = useState('date')
     const [sortDir, setSortDir] = useState('desc')
     const [expandedClients, setExpandedClients] = useState({})
@@ -59,8 +62,8 @@ export default function AllDataTab({ logs, loading }) {
         let result = logs
         if (clientFilter) result = result.filter((l) => l.client_name === clientFilter)
         if (signalFilter) result = result.filter((l) => l.performance_signal === signalFilter)
-        if (keyword.trim()) {
-            const kw = keyword.toLowerCase()
+        if (debouncedKeyword.trim()) {
+            const kw = debouncedKeyword.toLowerCase()
             result = result.filter((l) => {
                 return (
                     (l.client_name || '').toLowerCase().includes(kw) ||
@@ -78,7 +81,17 @@ export default function AllDataTab({ logs, loading }) {
             const bv = b[sortKey] || ''
             return sortDir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av)
         })
-    }, [logs, clientFilter, signalFilter, keyword, sortKey, sortDir])
+    }, [logs, clientFilter, signalFilter, debouncedKeyword, sortKey, sortDir])
+
+    const handleExportCsv = () => {
+        const cols = ['date', 'client_name', 'performance_signal', 'successes', 'blockers_problems', 'account_changes', 'planned_for_tomorrow', 'waiting_on', 'tech_setup_issues']
+        const headers = {
+            date: 'Date', client_name: 'Client', performance_signal: 'Signal',
+            successes: 'Successes', blockers_problems: 'Blockers', account_changes: 'Account Changes',
+            planned_for_tomorrow: 'Planned', waiting_on: 'Waiting On', tech_setup_issues: 'Tech Issues',
+        }
+        exportCsv(filtered, cols, headers, `adlab-logs-export.csv`)
+    }
 
     const handleSort = (key) => {
         if (sortKey === key) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
@@ -161,6 +174,20 @@ export default function AllDataTab({ logs, loading }) {
                 <span style={{ color: 'var(--accent-teal)', fontFamily: 'Inter, sans-serif', fontSize: 14 }}>
                     {filtered.length} results
                 </span>
+                <button
+                    onClick={handleExportCsv}
+                    disabled={filtered.length === 0}
+                    className="ml-auto px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200"
+                    style={{
+                        background: filtered.length === 0 ? 'var(--bg-surface)' : 'var(--accent-teal-bg)',
+                        border: '1px solid var(--border-glow)',
+                        color: filtered.length === 0 ? 'var(--text-muted)' : 'var(--accent-teal)',
+                        cursor: filtered.length === 0 ? 'not-allowed' : 'pointer',
+                        fontFamily: 'Syne, sans-serif',
+                    }}
+                >
+                    Export CSV
+                </button>
             </div>
 
             {/* Data table */}

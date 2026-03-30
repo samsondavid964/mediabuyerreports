@@ -2,13 +2,14 @@
 
 import { useMemo } from 'react'
 import { signalConfig, isSubstantive } from '@/lib/signalConfig'
+import { RECENT_WINS_LIMIT } from '@/lib/constants'
 
 export default function RecentWinsSummary({ logs }) {
     const wins = useMemo(() => {
         return [...logs]
             .filter((l) => l.performance_signal === 'Performing Well' && isSubstantive(l.successes))
             .sort((a, b) => b.date.localeCompare(a.date))
-            .slice(0, 6)
+            .slice(0, RECENT_WINS_LIMIT)
     }, [logs])
 
     return (
